@@ -551,4 +551,33 @@ describe('MockAdapter basics', function() {
         expect(response.data).to.deep.equal(data2);
       });
   });
+
+  it('should not overwrite existing mocks with different params', () => {
+    var data = [
+      {
+        bar: 123
+      }
+    ];
+
+    var data2 = [
+      {
+        bar: 321
+      }
+    ];
+
+    mock.onGet('/users', { params: { searchText: 'John' } }).reply(200, data);
+    mock.onGet('/users', { params: { searchText: 'Jack' } }).reply(200, data2);
+
+    return instance
+      .get('/users', { params: { searchText: 'John' } })
+      .then(function (response) {
+        expect(response.data).to.deep.equal(data);
+      })
+      .then(function () {
+        instance.get('/users', { params: { searchText: 'Jack' } })
+        .then(function (response) {
+          expect(response.data).to.deep.equal(data2);
+        })
+      })
+  })
 });

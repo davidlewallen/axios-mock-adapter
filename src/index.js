@@ -107,10 +107,16 @@ function addHandler(method, handlers, handler) {
   } else {
     if (handlers[method].length) {
       handlers[method].forEach(function(item, index) {
-        if (item[0] === handler[0]) {
+        var isSame = (
+          item[0] === handler[0] &&
+          item[1] === handler[1] &&
+          item[2] === handler[2]
+        );
+        if (isSame) {
           handlers[method].splice(index, 1, handler);
+        } else {
+          handlers[method].push(handler);
         }
-        handlers[method].push(handler);
       });
     } else {
       handlers[method].push(handler);
